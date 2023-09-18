@@ -5,8 +5,11 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cleyton_orocha.com.github.pedidos_api.domain.enums.TipoCliente;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +28,9 @@ public class Cliente implements Serializable {
     @Column(unique = true)
     private String email;
 
+    @Enumerated(EnumType.ORDINAL)
+    private TipoCliente tipoCliente;
+
     private String cpfCnpj;
 
     @JsonIgnore
@@ -34,15 +40,14 @@ public class Cliente implements Serializable {
 
     }
 
-    public Cliente(Integer id, String nome, String email, String cpfCnpj, String senha) {
+    public Cliente(Integer id, String nome, String email, TipoCliente tipoCliente, String cpfCnpj, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
+        this.tipoCliente = tipoCliente;
         this.cpfCnpj = cpfCnpj;
         this.senha = senha;
     }
-
-    
 
     public Integer getId() {
         return id;
@@ -84,6 +89,14 @@ public class Cliente implements Serializable {
         this.senha = senha;
     }
 
+    public TipoCliente getTipoCliente() {
+        return tipoCliente;
+    }
+
+    public void setTipoCliente(TipoCliente tipoCliente) {
+        this.tipoCliente = tipoCliente;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getId());
@@ -91,8 +104,10 @@ public class Cliente implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         Cliente cliente = (Cliente) obj;
         return getId().equals(cliente.getId());
     }
