@@ -1,11 +1,14 @@
 package cleyton_orocha.com.github.pedidos_api.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cleyton_orocha.com.github.pedidos_api.domain.enums.TipoCliente;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Cliente implements Serializable {
@@ -35,6 +39,9 @@ public class Cliente implements Serializable {
 
     @JsonIgnore
     private String senha;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Endereco> enderecos = new ArrayList<>();
 
     public Cliente() {
 
