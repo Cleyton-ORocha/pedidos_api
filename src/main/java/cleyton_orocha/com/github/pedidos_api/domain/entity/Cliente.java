@@ -6,17 +6,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cleyton_orocha.com.github.pedidos_api.domain.enums.Perfil;
 import cleyton_orocha.com.github.pedidos_api.domain.enums.TipoCliente;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,8 +36,7 @@ public class Cliente implements Serializable {
     @Column(unique = true)
     private String email;
 
-    @Enumerated(EnumType.ORDINAL)
-    private TipoCliente tipoCliente;
+    private Integer tipoCliente;
 
     private String cpfCnpj;
 
@@ -60,16 +59,17 @@ public class Cliente implements Serializable {
     private List<Pedido> pedidos;
 
     public Cliente() {
-
+        addPerfil(Perfil.CLIENTE);
     }
 
-    public Cliente(Integer id, String nome, String email, TipoCliente tipoCliente, String cpfCnpj, String senha) {
+    public Cliente(Integer id, String nome, String email, String cpfCnpj, TipoCliente tipo, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.tipoCliente = tipoCliente;
         this.cpfCnpj = cpfCnpj;
+        this.tipoCliente = (tipo == null) ? null : tipo.getCod();
         this.senha = senha;
+        addPerfil(Perfil.CLIENTE);
     }
 
     public Integer getId() {
@@ -104,6 +104,10 @@ public class Cliente implements Serializable {
         this.cpfCnpj = cpfCnpj;
     }
 
+    public TipoCliente getTipo() {
+        return TipoCliente.toEnum(this.tipoCliente);
+    }
+
     public String getSenha() {
         return senha;
     }
@@ -112,31 +116,54 @@ public class Cliente implements Serializable {
         this.senha = senha;
     }
 
-    public TipoCliente getTipoCliente() {
-        return tipoCliente;
+    public void setTipo(TipoCliente tipoCliente) {
+        this.tipoCliente = tipoCliente.getCod();
     }
 
-    public void setTipoCliente(TipoCliente tipoCliente) {
-        this.tipoCliente = tipoCliente;
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
+    public Set<String> getTelefones() {
+        return telefones;
+    }
+
+    public void setTelefones(Set<String> telefones) {
+        this.telefones = telefones;
+    }
+
+    public Set<Perfil> getPerfis() {
+        return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
     }
 
     public void addPerfil(Perfil perfil) {
-        perfil.add(perfil.getcode());
+        perfis.add(perfil.getCod());
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Cliente cliente = (Cliente) o;
+        return getId().equals(cliente.getId());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId());
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-        Cliente cliente = (Cliente) obj;
-        return getId().equals(cliente.getId());
-    }
-
 }

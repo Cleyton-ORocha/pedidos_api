@@ -1,6 +1,7 @@
 package cleyton_orocha.com.github.pedidos_api.domain.entity;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,7 +50,7 @@ public class Pedido implements Serializable {
     public Pedido() {
     }
 
-    public Pedido(Integer id, Date instant, cleyton_orocha.com.github.pedidos_api.domain.entity.Pagamento pagamento,
+    public Pedido(Integer id, Date instant, Pagamento pagamento,
             Cliente cliente, Endereco enderecoEntrega) {
         this.id = id;
         this.instant = instant;
