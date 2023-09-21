@@ -31,7 +31,7 @@ public class Pedido implements Serializable {
     private Integer id;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-    private Date instant;
+    private Date instante;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
     private Pagamento pagamento;
@@ -44,19 +44,30 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "endereco_de_entrega_id")
     private Endereco enderecoEntrega;
 
-    @OneToMany
+    @OneToMany(mappedBy = "id.pedido")
     private Set<ItemPedido> itens = new HashSet<>();
 
     public Pedido() {
     }
 
-    public Pedido(Integer id, Date instant, Pagamento pagamento,
-            Cliente cliente, Endereco enderecoEntrega) {
+    public Pedido(Integer id, Date instante, Pagamento pagamento, Cliente cliente, Endereco enderecoEntrega) {
         this.id = id;
-        this.instant = instant;
+        this.instante = instante;
         this.pagamento = pagamento;
         this.cliente = cliente;
         this.enderecoEntrega = enderecoEntrega;
+    }
+
+    // TODO: Validar depois
+    public Double getValorTotal() {
+
+        return itens.stream()
+                .mapToDouble(m -> m.getSubTotal())
+                .sum();
+
+        // return itens.stream()
+        // .map(i -> i.getSubTotal())
+        // .reduce(0.0, (a, i) -> a + i);
     }
 
     public Integer getId() {
@@ -67,12 +78,12 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
-    public Date getInstant() {
-        return instant;
+    public Date getInstante() {
+        return instante;
     }
 
-    public void setInstant(Date instant) {
-        this.instant = instant;
+    public void setInstante(Date instant) {
+        this.instante = instant;
     }
 
     public Pagamento getPagamento() {
@@ -99,16 +110,8 @@ public class Pedido implements Serializable {
         this.enderecoEntrega = enderecoEntrega;
     }
 
-    public void setEnderecoDeEntrega(Endereco enderecoDeEntrega) {
-        this.enderecoEntrega = enderecoDeEntrega;
-    }
-
     public Set<ItemPedido> getItens() {
         return itens;
-    }
-
-    public void setItens(Set<ItemPedido> itens) {
-        this.itens = itens;
     }
 
     @Override
