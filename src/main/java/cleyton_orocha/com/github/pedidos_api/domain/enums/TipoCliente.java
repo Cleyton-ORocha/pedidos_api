@@ -15,7 +15,6 @@ public enum TipoCliente {
     }
 
     public static TipoCliente toEnum(Integer cod) {
-
         return Stream.of(TipoCliente.values())
                 .filter(f -> f.getCod().equals(cod))
                 .findFirst()
